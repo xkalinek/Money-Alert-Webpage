@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Money Alert — flipowanie iPhone'ów na OLX i Vinted</title>
+<meta name="description" content="Bot skanuje OLX i Vinted 24/7 i wysyła Ci alert, zanim ktokolwiek zdąży odświeżyć stronę. Dołącz do Discorda Money Alert i zacznij flipować iPhone'y.">
+<meta name="theme-color" content="#070E18">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Money Alert — flipowanie iPhone'ów na OLX i Vinted">
+<meta property="og:description" content="Alert szybszy niż konkurencja. Kupuj taniej, sprzedawaj drożej, licz marżę.">
+<meta property="og:image" content="assets/logo-512.png">
+
+<link rel="icon" type="image/png" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/logo-512.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══════════ PRELOADER: radar sweep ══════════ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__radar">
+    <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+    <span class="sweep"></span>
+    <img src="assets/logo-160.png" alt="" class="loader__logo">
+  </div>
+  <p class="loader__word">MONEY<span>ALERT</span></p>
+  <p class="loader__status" id="loaderStatus">Uruchamianie skanera…</p>
+  <div class="loader__bar"><i id="loaderBar"></i></div>
+</div>
+
+<a class="skip" href="#main">Przejdź do treści</a>
+
+<!-- ══════════ NAV ══════════ -->
+<header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="#top">
+      <img src="assets/logo-160.png" alt="Money Alert" width="40" height="40">
+      <span class="brand__txt">MONEY<b>ALERT</b></span>
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Główna nawigacja">
+      <a href="#jak">Jak to działa</a>
+      <a href="#kalkulator">Kalkulator</a>
+      <a href="#bot">Bot</a>
+      <a href="#ebook">Ebook</a>
+      <a href="#pakiety">Pakiety</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn--sm btn--primary nav__cta" href="#" data-link="discord">Wejdź na Discorda</a>
+    </nav>
+
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="top">
+  <div class="hero__glow" id="heroGlow"></div>
+  <div class="hero__grid-bg"></div>
+
+  <div class="wrap hero__in">
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="dot"></span>skaner online · OLX + Vinted</p>
+
+      <h1 class="h1">
+        Ktoś właśnie wystawił<br>
+        iPhone'a <span class="grad">za tanio.</span><br>
+        <span class="h1__sub">Dowiedz się o tym pierwszy.</span>
+      </h1>
+
+      <p class="lead">
+        Money Alert to Discord dla ludzi, którzy robią pieniądze na różnicy cen.
+        Bot skanuje ogłoszenia non-stop, wyłapuje okazje i wrzuca Ci je na kanał
+        razem z wyceną i marżą. Ty tylko piszesz do sprzedającego.
+      </p>
+
+      <div class="hero__cta">
+        <a class="btn btn--primary btn--lg" href="#" data-link="discord">
+          Dołącz do Discorda — 0 zł
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn--ghost btn--lg" href="#ebook">Zobacz ebooka</a>
+      </div>
+
+      <ul class="hero__stats">
+        <li><b data-count="10" data-prefix="&lt;" data-suffix=" s">&lt;10 s</b><span>od wystawienia do alertu</span></li>
+        <li><b data-count="24" data-suffix="/7">24/7</b><span>skanowanie bez przerwy</span></li>
+        <li><b data-count="2">2</b><span>platformy: OLX i Vinted</span></li>
+      </ul>
+    </div>
+
+    <!-- SYGNATURA STRONY: żywy feed alertów -->
+    <div class="feed" aria-hidden="true">
+      <div class="feed__top">
+        <span class="feed__dotrow"><i></i><i></i><i></i></span>
+        <span class="feed__chan">#alerty-iphone</span>
+        <span class="feed__live"><em></em>LIVE</span>
+      </div>
+      <div class="feed__body" id="feedBody"></div>
+      <div class="feed__bottom">
+        <span class="feed__typing"><i></i><i></i><i></i></span>
+        <span>MoneyAlert BOT skanuje ogłoszenia…</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scrollhint"><span></span>scroll</div>
+</section>
+
+<!-- ══════════ TICKER ══════════ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track" id="tickerTrack"></div>
+</div>
+
+<!-- ══════════ JAK TO DZIAŁA ══════════ -->
+<section class="sect" id="jak">
+  <div class="wrap">
+    <header class="sect__head">
+      <p class="eyebrow"><span class="dot"></span>proces</p>
+      <h2 class="h2">Trzy ruchy. Zero magii.</h2>
+      <p class="sect__lead">Flip to nie loteria, tylko powtarzalna procedura. Poniżej cała pętla — od alertu do przelewu.</p>
+    </header>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step__no">01</span>
+        <h3>Bot znajduje okazję</h3>
+        <p>Skaner pilnuje nowych ogłoszeń na OLX i Vinted. Porównuje cenę z realną wartością rynkową modelu i odzywa się tylko wtedy, gdy różnica ma sens.</p>
+        <span class="step__tag">automat</span>
+      </li>
+      <li class="step reveal">
+        <span class="step__no">02</span>
+        <h3>Kupujesz i sprawdzasz</h3>
+        <p>Dostajesz gotowy szablon wiadomości, listę pytań o stan baterii i blokadę iCloud oraz checklistę odbioru. Nie improwizujesz przy sprzedającym.</p>
+        <span class="step__tag">twoja robota</span>
+      </li>
+      <li class="step reveal">
+        <span class="step__no">03</span>
+        <h3>Sprzedajesz z marżą</h3>
+        <p>Zdjęcia, opis i cena według schematu, który sprzedaje najszybciej. Zysk wraca do obrotu i kupujesz następną sztukę. Tak rośnie kapitał.</p>
+        <span class="step__tag">powtarzasz</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══════════ KALKULATOR ══════════ -->
+<section class="sect sect--calc" id="kalkulator">
+  <div class="wrap calc">
+    <div class="calc__copy">
+      <p class="eyebrow"><span class="dot"></span>policz sobie</p>
+      <h2 class="h2">Ile zostaje w kieszeni?</h2>
+      <p class="sect__lead">Przesuń suwak i zobacz, jak wygląda pojedynczy flip po odliczeniu kosztów. Widełki sprzedaży to orientacyjne ceny rynkowe — ustaw własne, jeśli znasz swój rynek lepiej.</p>
+      <ul class="calc__notes">
+        <li>Koszt dojazdu i wysyłki liczony ryczałtem.</li>
+        <li>Bufor na drobną naprawę lub negocjację kupującego.</li>
+        <li>Zysk poniżej progu opłacalności podświetla się na czerwono.</li>
+      </ul>
+    </div>
+
+    <div class="calc__panel">
+      <label class="field">
+        <span class="field__lbl">Model</span>
+        <select id="calcModel" class="field__inp"></select>
+      </label>
+
+      <label class="field">
+        <span class="field__lbl">Cena zakupu <b id="calcBuyVal">—</b></span>
+        <input type="range" id="calcBuy" class="range" min="200" max="4000" step="10">
+      </label>
+
+      <label class="field">
+        <span class="field__lbl">Cena sprzedaży <b id="calcSellVal">—</b></span>
+        <input type="range" id="calcSell" class="range" min="200" max="5500" step="10">
+      </label>
+
+      <label class="field">
+        <span class="field__lbl">Koszty dodatkowe <b id="calcCostVal">—</b></span>
+        <input type="range" id="calcCost" class="range" min="0" max="400" step="10" value="60">
+      </label>
+
+      <div class="calc__out" id="calcOut">
+        <div class="calc__profit">
+          <span>Zysk z jednej sztuki</span>
+          <b id="calcProfit">0 zł</b>
+        </div>
+        <div class="calc__bar"><i id="calcBar"></i></div>
+        <div class="calc__meta">
+          <span>Marża: <b id="calcMargin">0%</b></span>
+          <span>10 sztuk w miesiącu: <b id="calcMonth">0 zł</b></span>
+        </div>
+      </div>
+
+      <p class="calc__disclaimer">Kalkulator pokazuje wynik dla wpisanych liczb, a nie obietnicę zarobku. Realny wynik zależy od rynku, stanu sprzętu i Twojej pracy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ BOT ══════════ -->
+<section class="sect" id="bot">
+  <div class="wrap">
+    <header class="sect__head">
+      <p class="eyebrow"><span class="dot"></span>narzędzie</p>
+      <h2 class="h2">Bot, który nie śpi</h2>
+      <p class="sect__lead">Dwa źródła ogłoszeń, jeden kanał na Discordzie. Wybierz platformę, żeby zobaczyć, co potrafi.</p>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="Platformy">
+      <button class="tab is-on" role="tab" aria-selected="true" aria-controls="pane-olx" id="tab-olx">OLX</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="pane-vinted" id="tab-vinted">Vinted</button>
+    </div>
+
+    <div class="pane is-on" id="pane-olx" role="tabpanel" aria-labelledby="tab-olx" tabindex="0">
+      <div class="cards">
+        <article class="card reveal"><h3>Filtry, które mają sens</h3><p>Model, pojemność, stan, przedział cenowy i promień od Twojego miasta. Ustawiasz raz komendą, bot pilnuje reszty.</p></article>
+        <article class="card reveal"><h3>Wycena przy ogłoszeniu</h3><p>Do każdego alertu doklejona średnia cena sprzedaży modelu i wyliczona marża. Widzisz od razu, czy warto pisać.</p></article>
+        <article class="card reveal"><h3>Prywatny kanał</h3><p>Twoje alerty lecą na kanał widoczny tylko dla Ciebie. Nie ścigasz się z całym serwerem o to samo ogłoszenie.</p></article>
+        <article class="card reveal"><h3>Filtr śmieci</h3><p>Odsiewa uszkodzone, zablokowane na iCloud i ogłoszenia sklepowe. Zostają realne sztuki od osób prywatnych.</p></article>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-vinted" role="tabpanel" aria-labelledby="tab-vinted" tabindex="0" hidden>
+      <div class="cards">
+        <article class="card reveal"><h3>Nowe wystawki w kilka sekund</h3><p>Vinted potrafi wypuścić okazję o trzeciej w nocy. Bot nie ma pory snu, więc alert dostajesz i tak.</p></article>
+        <article class="card reveal"><h3>Przyciski pod ogłoszeniem</h3><p>Ulubione, propozycja ceny, pytanie do sprzedającego — akcje dostępne prosto z Discorda, bez szukania w aplikacji.</p></article>
+        <article class="card reveal"><h3>Rezerwacja przedmiotu</h3><p>Sniper blokuje sztukę i odsyła Ci link do płatności. Decyzję o wydaniu pieniędzy zawsze podejmujesz sam.</p></article>
+        <article class="card reveal"><h3>Historia trafień</h3><p>Wszystkie Twoje alerty i zakupy zapisane w jednym miejscu, żeby dało się policzyć realną skuteczność.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EBOOK ══════════ -->
+<section class="sect sect--gold" id="ebook">
+  <div class="wrap ebook">
+    <div class="ebook__visual">
+      <div class="book" id="book">
+        <div class="book__face">
+          <span class="book__eyebrow">PORADNIK · WYDANIE 2026</span>
+          <h3 class="book__title">FLIP<br>iPHONE</h3>
+          <p class="book__sub">Od pierwszej sztuki do powtarzalnego obrotu</p>
+          <span class="book__brand"><img src="assets/logo-160.png" alt="" width="26" height="26">MONEY ALERT</span>
+        </div>
+        <div class="book__spine"></div>
+      </div>
+    </div>
+
+    <div class="ebook__copy">
+      <p class="eyebrow eyebrow--gold"><span class="dot"></span>ebook</p>
+      <h2 class="h2">Etat płaci raz w miesiącu.<br>Obrót płaci co tydzień.</h2>
+      <p class="sect__lead">
+        Nikt nie zbudował majątku na tym, że „jakoś to będzie”. Zbudował go na systemie,
+        który da się powtórzyć w każdy wolny wieczór. Ten ebook to zapis takiego systemu —
+        bez motywacyjnego lania wody, za to z liczbami, szablonami i listą błędów,
+        które kosztują najwięcej.
+      </p>
+
+      <div class="chapters" id="chapters">
+        <details class="chap"><summary>1 · Skąd biorą się okazje</summary><p>Dlaczego ludzie sprzedają dobry sprzęt poniżej wartości i jak rozpoznać takie ogłoszenie po trzech sekundach czytania.</p></details>
+        <details class="chap"><summary>2 · Wycena, której nie zmyślasz</summary><p>Jak ustalić realną cenę sprzedaży modelu na podstawie danych z rynku, a nie przeczucia. Kondycja baterii, wersja, komplet.</p></details>
+        <details class="chap"><summary>3 · Sprawdzenie sztuki na miejscu</summary><p>Blokada iCloud, IMEI, ślady serwisu, wymieniony wyświetlacz. Checklista, którą przechodzisz przy sprzedającym w pięć minut.</p></details>
+        <details class="chap"><summary>4 · Negocjacja bez proszenia</summary><p>Gotowe wiadomości otwierające i sposób prowadzenia rozmowy, który zbija cenę bez robienia z siebie natręta.</p></details>
+        <details class="chap"><summary>5 · Ogłoszenie, które sprzedaje w 48 h</summary><p>Zdjęcia, tytuł, opis i moment publikacji. Schemat, który skraca czas leżenia towaru i uwalnia kapitał.</p></details>
+        <details class="chap"><summary>6 · Skalowanie i podatki</summary><p>Kiedy przestaje się to opłacać robić na boku, jak liczyć obrót i w którym momencie warto założyć działalność.</p></details>
+      </div>
+
+      <div class="buy">
+        <div class="buy__price">
+          <span class="buy__old" data-price="old"></span>
+          <b class="buy__now" data-price="now"></b>
+          <span class="buy__note">dostęp natychmiast po zakupie · PDF + szablony</span>
+        </div>
+        <a class="btn btn--gold btn--lg" href="#" data-link="checkout">
+          Kup ebooka
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PAKIETY ══════════ -->
+<section class="sect" id="pakiety">
+  <div class="wrap">
+    <header class="sect__head">
+      <p class="eyebrow"><span class="dot"></span>dostęp</p>
+      <h2 class="h2">Wybierz poziom</h2>
+      <p class="sect__lead">Zacznij od darmowego kanału. Płacisz dopiero wtedy, gdy chcesz mieć alerty szybciej niż reszta.</p>
+    </header>
+
+    <div class="plans">
+      <article class="plan reveal">
+        <h3 class="plan__name">Wejście</h3>
+        <p class="plan__price" data-price="free"></p>
+        <ul class="plan__list">
+          <li>Publiczny kanał z okazjami</li>
+          <li>Opóźnienie alertu 10 minut</li>
+          <li>Poradnik startowy na kanale</li>
+          <li>Społeczność i pytania</li>
+        </ul>
+        <a class="btn btn--ghost" href="#" data-link="discord">Dołącz za darmo</a>
+      </article>
+
+      <article class="plan plan--hot reveal">
+        <span class="plan__flag">najczęściej wybierany</span>
+        <h3 class="plan__name">Sniper</h3>
+        <p class="plan__price" data-price="sniper"></p>
+        <ul class="plan__list">
+          <li>Alerty natychmiast, bez opóźnienia</li>
+          <li>Prywatny kanał i własne filtry</li>
+          <li>OLX i Vinted razem</li>
+          <li>Wycena i marża przy ogłoszeniu</li>
+          <li>Przyciski akcji pod alertem</li>
+        </ul>
+        <a class="btn btn--primary" href="#" data-link="checkout">Odblokuj Snipera</a>
+      </article>
+
+      <article class="plan reveal">
+        <h3 class="plan__name">Sniper + Ebook</h3>
+        <p class="plan__price" data-price="bundle"></p>
+        <ul class="plan__list">
+          <li>Wszystko z pakietu Sniper</li>
+          <li>Ebook „Flip iPhone” w komplecie</li>
+          <li>Szablony wiadomości i ogłoszeń</li>
+          <li>Kanał do zadawania pytań o konkretne sztuki</li>
+        </ul>
+        <a class="btn btn--gold" href="#" data-link="checkout">Wybierz komplet</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section class="sect" id="faq">
+  <div class="wrap wrap--narrow">
+    <header class="sect__head">
+      <p class="eyebrow"><span class="dot"></span>pytania</p>
+      <h2 class="h2">Zanim zapytasz na kanale</h2>
+    </header>
+
+    <div class="faq">
+      <details class="chap"><summary>Ile potrzebuję na start?</summary><p>Tyle, ile kosztuje pierwsza sztuka, którą chcesz kupić. Starsze modele zaczynają się w okolicach kilkuset złotych, więc próg wejścia jest niski — ale muszą to być pieniądze, których nie potrzebujesz na życie.</p></details>
+      <details class="chap"><summary>Czy to jest legalne?</summary><p>Kupno i sprzedaż używanego sprzętu jest legalne. Przy większej skali dochodzą obowiązki podatkowe i rejestracja działalności — ten temat opisany jest w ostatnim rozdziale ebooka, ale w razie wątpliwości pytaj księgowego, nie Discorda.</p></details>
+      <details class="chap"><summary>Czy bot kupuje za mnie?</summary><p>Nie. Bot znajduje ogłoszenie, wycenia je i może zarezerwować przedmiot na Vinted, ale płatność zawsze zatwierdzasz Ty. Pieniądze nie wychodzą z Twojego konta bez Twojej decyzji.</p></details>
+      <details class="chap"><summary>Gwarantujecie zarobek?</summary><p>Nie i nie uwierz nikomu, kto gwarantuje. Dostajesz narzędzie i procedurę. Wynik zależy od tego, ile ogłoszeń obsłużysz, jak negocjujesz i jaki masz rynek lokalny.</p></details>
+      <details class="chap"><summary>Nie znam się na telefonach, dam radę?</summary><p>Tak, pod warunkiem że przerobisz checklistę sprawdzania sztuki, zanim pojedziesz na pierwsze spotkanie. Cała trudność to wiedzieć, czego szukać — a tego można się nauczyć w jeden wieczór.</p></details>
+      <details class="chap"><summary>Jak wypowiedzieć dostęp?</summary><p>Dostęp kupujesz na okres rozliczeniowy i wygasa sam, jeśli go nie przedłużysz. Nie ma żadnej umowy ani okresu wypowiedzenia.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CTA ══════════ -->
+<section class="cta">
+  <div class="wrap cta__in">
+    <span class="cta__ping"><i></i></span>
+    <h2 class="h2">Okazje lecą teraz. Bez Ciebie.</h2>
+    <p>Wejście na serwer nie kosztuje nic. Zostaniesz albo nie — ale przynajmniej zobaczysz, jak to wygląda od środka.</p>
+    <div class="cta__row">
+      <a class="btn btn--primary btn--lg" href="#" data-link="discord">Wejdź na Discorda</a>
+      <button class="btn btn--ghost btn--lg" id="copyBtn" type="button">Skopiuj link</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__brand">
+      <img src="assets/logo-160.png" alt="Money Alert" width="46" height="46">
+      <p>Money Alert — alerty o okazjach na OLX i Vinted oraz materiały o handlu używanym sprzętem.</p>
+    </div>
+    <nav class="foot__nav" aria-label="Stopka">
+      <a href="#jak">Jak to działa</a>
+      <a href="#bot">Bot</a>
+      <a href="#ebook">Ebook</a>
+      <a href="#pakiety">Pakiety</a>
+      <a href="#faq">FAQ</a>
+      <a href="#" data-link="discord">Discord</a>
+    </nav>
+    <p class="foot__note">
+      Materiały mają charakter edukacyjny i nie są poradą inwestycyjną ani podatkową.
+      Money Alert nie gwarantuje żadnego wyniku finansowego — handel używanym sprzętem
+      wiąże się z ryzykiem straty zainwestowanych pieniędzy. Serwis nie jest powiązany
+      z OLX, Vinted, Discordem ani Apple.
+    </p>
+    <p class="foot__copy">© <span id="year"></span> Money Alert</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
